@@ -1,5 +1,4 @@
-// blog.controller.js
-
+const httpStatus = require("http-status");
 const BlogService = require("./blog.service");
 
 const BlogController = {
@@ -7,9 +6,13 @@ const BlogController = {
     try {
       console.log("from blog controller - create post");
       const newPost = await BlogService.createPost(req.body);
-      res.status(201).json({ data: newPost });
+      res
+        .status(httpStatus.CREATED)
+        .json({ status: httpStatus.CREATED, data: newPost });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(httpStatus.BAD_REQUEST)
+        .json({ status: httpStatus.BAD_REQUEST, message: error.message });
     }
   },
 
@@ -17,9 +20,11 @@ const BlogController = {
     try {
       console.log("from blog controller - get posts");
       const posts = await BlogService.getPosts();
-      res.status(200).json({ data: posts });
+      res.status(httpStatus.OK).json({ status: httpStatus.OK, data: posts });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(httpStatus.BAD_REQUEST)
+        .json({ status: httpStatus.BAD_REQUEST, message: error.message });
     }
   },
 
@@ -28,9 +33,11 @@ const BlogController = {
       console.log("from blog controller - get post by ID");
       const postId = req.params.postId;
       const post = await BlogService.getPostById(postId);
-      res.status(200).json({ data: post });
+      res.status(httpStatus.OK).json({ status: httpStatus.OK, data: post });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(httpStatus.BAD_REQUEST)
+        .json({ status: httpStatus.BAD_REQUEST, message: error.message });
     }
   },
 
@@ -39,9 +46,13 @@ const BlogController = {
       console.log("from blog controller - update post");
       const postId = req.params.postId;
       const updatedPost = await BlogService.updatePost(postId, req.body);
-      res.status(200).json({ data: updatedPost });
+      res
+        .status(httpStatus.OK)
+        .json({ status: httpStatus.OK, data: updatedPost });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(httpStatus.BAD_REQUEST)
+        .json({ status: httpStatus.BAD_REQUEST, message: error.message });
     }
   },
 
@@ -50,9 +61,11 @@ const BlogController = {
       console.log("from blog controller - delete post");
       const postId = req.params.postId;
       await BlogService.deletePost(postId);
-      res.status(204).end();
+      res.status(httpStatus.NO_CONTENT).end();
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(httpStatus.BAD_REQUEST)
+        .json({ status: httpStatus.BAD_REQUEST, message: error.message });
     }
   },
 };

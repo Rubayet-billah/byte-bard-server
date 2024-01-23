@@ -11,10 +11,22 @@ const BlogService = {
       if (!user) {
         throw new Error("User not found.");
       }
+      const existedPost = await Blog.findOne({
+        author: userId,
+        title: postData.title,
+      });
+
+      if (existedPost) {
+        throw new Error("This post already exists");
+      }
+
       const newPost = await Blog.create({
         ...postData,
         author: userId,
       });
+
+      user.posts.push(newPost._id);
+      await user.save();
 
       return newPost;
     } catch (error) {
@@ -24,7 +36,7 @@ const BlogService = {
 
   async getPosts() {
     try {
-      const posts = await Blog.find();
+      const posts = await Blog.find().populate("author");
       return posts;
     } catch (error) {
       throw new Error(error.message);

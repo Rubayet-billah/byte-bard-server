@@ -5,6 +5,12 @@ const userSchema = new mongoose.Schema({
   lastName: String,
   email: String,
   password: String,
+  posts: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Blog",
+    },
+  ],
 });
 
 // Create the User model

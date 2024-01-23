@@ -1,3 +1,4 @@
+const httpStatus = require("http-status");
 const UserService = require("./user.service");
 
 const UserController = {
@@ -5,9 +6,14 @@ const UserController = {
     try {
       console.log("from controller");
       const newUser = await UserService.createUser(req.body);
-      res.status(201).json({ data: newUser });
+      res.status(httpStatus.CREATED).json({
+        status: httpStatus.CREATED,
+        data: newUser,
+      });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(httpStatus.BAD_REQUEST)
+        .json({ status: httpStatus.BAD_REQUEST, message: error.message });
     }
   },
 
@@ -16,9 +22,11 @@ const UserController = {
       console.log("from login controller");
       const result = await UserService.loginUser(req.body);
 
-      res.status(200).json({ data: result });
+      res.status(httpStatus.OK).json({ status: httpStatus.OK, data: result });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      res
+        .status(httpStatus.BAD_REQUEST)
+        .json({ status: httpStatus.BAD_REQUEST, message: error.message });
     }
   },
 };
