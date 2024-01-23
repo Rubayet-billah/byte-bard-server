@@ -18,8 +18,7 @@ const BlogController = {
 
   async getPosts(req, res) {
     try {
-      console.log("from blog controller - get posts");
-      const posts = await BlogService.getPosts();
+      const posts = await BlogService.getPosts(req.query);
       res.status(httpStatus.OK).json({ status: httpStatus.OK, data: posts });
     } catch (error) {
       res
@@ -43,7 +42,6 @@ const BlogController = {
 
   async updatePost(req, res) {
     try {
-      console.log("from blog controller - update post");
       const postId = req.params.postId;
       const updatedPost = await BlogService.updatePost(postId, req.body);
       res
@@ -60,8 +58,8 @@ const BlogController = {
     try {
       console.log("from blog controller - delete post");
       const postId = req.params.postId;
-      await BlogService.deletePost(postId);
-      res.status(httpStatus.NO_CONTENT).end();
+      const result = await BlogService.deletePost(postId);
+      res.status(httpStatus.OK).json({ status: httpStatus.OK, data: result });
     } catch (error) {
       res
         .status(httpStatus.BAD_REQUEST)

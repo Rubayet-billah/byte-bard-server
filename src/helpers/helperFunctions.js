@@ -1,4 +1,6 @@
 const bcrypt = require("bcrypt");
+const User = require("../app/modules/user/user.model");
+const Blog = require("../app/modules/blog/blog.model");
 
 const generateHashedPassword = async (plainPassword) => {
   const saltRounds = +process.env.BCRYPT_SALT_ROUNDS;
@@ -20,7 +22,20 @@ const comparePassword = async (plainPassword, hashedPassword) => {
   }
 };
 
+const isValidUser = async (userId, postId) => {
+  if (userId && postId) {
+    const blogPost = await Blog.findById(postId);
+    if (!blogPost) {
+      return false;
+    }
+    return blogPost.author.toString() === userId;
+  } else {
+    return false;
+  }
+};
+
 module.exports = {
   generateHashedPassword,
   comparePassword,
+  isValidUser,
 };

@@ -1,5 +1,6 @@
 // blog.service.js
 
+const { isValidUser } = require("../../../helpers/helperFunctions");
 const User = require("../user/user.model");
 const Blog = require("./blog.model");
 
@@ -34,9 +35,16 @@ const BlogService = {
     }
   },
 
-  async getPosts() {
+  async getPosts(query) {
     try {
-      const posts = await Blog.find().populate("author");
+      const { authorId } = query;
+
+      const queryFilter = {};
+      if (authorId) {
+        queryFilter.author = authorId;
+      }
+
+      const posts = await Blog.find(queryFilter).populate("author");
       return posts;
     } catch (error) {
       throw new Error(error.message);
@@ -57,6 +65,11 @@ const BlogService = {
 
   async updatePost(postId, postData) {
     try {
+      const { userId } = postData;
+      const isValid = await isValidUser(userId, postId);
+      if (!isValid) {
+        throw new Error("Unauthorized user");
+      }
       const updatedPost = await Blog.findByIdAndUpdate(postId, postData, {
         new: true,
       });
